@@ -121,7 +121,7 @@ const PrintPreview: React.FC = () => {
               : "none",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            cursor: image ? "grab" : "default",
+            cursor: "default",
           }}
           onClick={!image ? handleChoosePhoto : undefined}
         >
