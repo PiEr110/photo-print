@@ -28,6 +28,11 @@ const PrintPreview: React.FC = () => {
   const [zoom, setZoom] = useState<number>(1);
   const [showCropper, setShowCropper] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [contextMenuVisible, setContexMenuVisible] = useState<boolean>(false);
+  const [contexMenuPosition, setContextMenuPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Conversione da cm a pixel (1 cm ≈ 35.4331 px)
@@ -95,6 +100,30 @@ const PrintPreview: React.FC = () => {
     navigate("/confirmation");
   };
 
+  const handleRightClick = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setContexMenuVisible(true);
+    setContextMenuPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const handleMenuClose = () => {
+    setContexMenuVisible(false);
+  };
+
+  const handleChangePhoto = () => {
+    handleChoosePhoto();
+    handleMenuClose();
+  };
+
+  const handleResizePhoto = () => {
+    setShowCropper(true);
+    handleMenuClose();
+  };
+
+  const handleGoBack = () => {
+    navigate("/");
+  };
+
   useEffect(() => {
     return () => {
       if (croppedImage) {
@@ -108,7 +137,8 @@ const PrintPreview: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center bg-gray-200 min-h-screen p-4">
+      <div className="flex flex-col items-center justify-center bg-gray-200 min-h-screen p-4">
+        {/* Preview della foto */}
         <div
           className="flex items-center justify-center bg-white border border-black relative"
           style={{
@@ -122,8 +152,10 @@ const PrintPreview: React.FC = () => {
             backgroundSize: "cover",
             backgroundPosition: "center",
             cursor: "default",
+            marginBottom: "20px",
           }}
           onClick={!image ? handleChoosePhoto : undefined}
+          onContextMenu={image ? handleRightClick : undefined}
         >
           {!image && (
             <RiImageAddFill
@@ -139,6 +171,24 @@ const PrintPreview: React.FC = () => {
             onChange={handleFileChange}
             style={{ display: "none" }}
           />
+        </div>
+
+        {/* Pulasanti ordina e indietro */}
+        <div className="flex justify-between p-4 space-x-8">
+          <button
+            className="bg-gray-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-600"
+            onClick={handleGoBack}
+          >
+            Indietro
+          </button>
+          {image && (
+            <button
+              className="bg-blue-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-600"
+              onClick={handleOrder}
+            >
+              Ordina
+            </button>
+          )}
         </div>
       </div>
 
@@ -190,6 +240,30 @@ const PrintPreview: React.FC = () => {
         </div>
       )}
 
+      {/* Context menu */}
+      {contextMenuVisible && contexMenuPosition && (
+        <div
+          className="fixed bg-white border border-gray-300 rounded shadow-lg"
+          style={{ left: contexMenuPosition.x, top: contexMenuPosition.y }}
+          onMouseLeave={handleMenuClose}
+        >
+          <ul className="p-2">
+            <li
+              className="p-1 hover:bg-gray-200 cursor-pointer"
+              onClick={handleChangePhoto}
+            >
+              Cambia foto
+            </li>
+            <li
+              className="p-1 hover:bg-gray-200 cursor-pointer"
+              onClick={handleResizePhoto}
+            >
+              Ritaglia/Ridimensiona
+            </li>
+          </ul>
+        </div>
+      )}
+
       {/* Message Modal */}
       {message && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -207,18 +281,6 @@ const PrintPreview: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Ordina Button */}
-      {image && (
-        <div className="fixed bottom-4 right-4">
-          <button
-            className="bg-green-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-green-600"
-            onClick={handleOrder}
-          >
-            Ordina
-          </button>
         </div>
       )}
     </>

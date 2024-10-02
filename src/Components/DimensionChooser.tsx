@@ -58,7 +58,7 @@ const DimensionChooser: React.FC = () => {
         {/* Box formato */}
         <div className="bg-white border border-gray-300 p-4 mb-6 shadow rounded">
           <p className="font-semibold mb-2">Formato (cm)</p>
-          <div className="flex space-x-4 flex-wrap space-y-4">
+          <div className="space-x-4 flex-wrap space-y-4">
             {predefinedDimensions.map((dim) => (
               <button
                 key={`${dim.width}x${dim.height}`}
