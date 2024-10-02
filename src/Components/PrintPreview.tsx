@@ -36,9 +36,20 @@ const PrintPreview: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Conversione da cm a pixel (1 cm ≈ 35.4331 px)
-  const CM_TO_PX = 35.4331;
-  const DIV_WIDTH: number = width ? parseInt(width) * CM_TO_PX : 704;
-  const DIV_HEIGHT: number = height ? parseInt(height) * CM_TO_PX : 704;
+  const MAX_WIDTH: number = 900;
+  const MAX_HEIGHT: number = 650;
+
+  const scaleFactor = Math.min(
+    MAX_WIDTH / (width ? parseInt(width) : 0),
+    MAX_HEIGHT / (height ? parseInt(height) : 0)
+  );
+
+  const scaledWidth = (width ? parseInt(width) : 0) * scaleFactor;
+  const scaledHeight = (height ? parseInt(height) : 0) * scaleFactor;
+
+  // const CM_TO_PX = 35.4331;
+  // const DIV_WIDTH: number = width ? parseInt(width) * CM_TO_PX : 704;
+  // const DIV_HEIGHT: number = height ? parseInt(height) * CM_TO_PX : 704;
 
   const handleChoosePhoto = () => {
     if (fileInputRef.current) {
@@ -142,8 +153,10 @@ const PrintPreview: React.FC = () => {
         <div
           className="flex items-center justify-center bg-white border border-black relative"
           style={{
-            width: DIV_WIDTH,
-            height: DIV_HEIGHT,
+            width: scaledWidth,
+            height: scaledHeight,
+            // width: DIV_WIDTH,
+            // height: DIV_HEIGHT,
             backgroundImage: croppedImage
               ? `url(${croppedImage})`
               : image
