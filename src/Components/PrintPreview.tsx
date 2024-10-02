@@ -66,7 +66,7 @@ const PrintPreview: React.FC = () => {
         const img = new Image();
         img.src = result;
         img.onload = () => {
-          if (img.width <= DIV_WIDTH && img.height <= DIV_HEIGHT) {
+          if (img.width <= scaledWidth && img.height <= scaledHeight) {
             setImage(result);
             setCroppedImage(null);
           } else {
@@ -167,7 +167,6 @@ const PrintPreview: React.FC = () => {
             cursor: "default",
             marginBottom: "20px",
           }}
-          onClick={!image ? handleChoosePhoto : undefined}
           onContextMenu={image ? handleRightClick : undefined}
         >
           {!image && (
@@ -216,7 +215,8 @@ const PrintPreview: React.FC = () => {
                   image={image}
                   crop={crop}
                   zoom={zoom}
-                  aspect={DIV_WIDTH / DIV_HEIGHT}
+                  // aspect={DIV_WIDTH / DIV_HEIGHT}
+                  aspect={scaledWidth / scaledHeight}
                   onCropChange={setCrop}
                   onZoomChange={setZoom}
                   onCropComplete={onCropComplete}
