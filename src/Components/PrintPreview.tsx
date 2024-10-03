@@ -13,6 +13,7 @@ import MenuPreview from "./MenuPreview";
 import { GalleryContext } from "../context/GalleryContext";
 
 interface RouteParams {
+  [key: string]: string;
   width: string;
   height: string;
 }
@@ -24,7 +25,14 @@ const PrintPreview: React.FC = () => {
   const { images } = React.useContext(GalleryContext)!;
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
+
   const [image, setImage] = useState<string | null>(null);
+  // const [imagePosition, setImagePosition] = useState<{ x: number; y: number }>({
+  //   x: 0,
+  //   y: 0,
+  // });
+  const [isLowQuality, setIsLowQuality] = useState<boolean>(false);
+
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [croppedAreaPixels, setCroppedAreaPixels] =
     useState<CroppedAreaPixels | null>(null);
@@ -54,6 +62,20 @@ const PrintPreview: React.FC = () => {
   // const CM_TO_PX = 35.4331;
   // const DIV_WIDTH: number = width ? parseInt(width) * CM_TO_PX : 704;
   // const DIV_HEIGHT: number = height ? parseInt(height) * CM_TO_PX : 704;
+
+  const checkImageQuality = (img: HTMLImageElement) => {
+    const widthRatio = img.naturalWidth / scaledWidth;
+    const heightRatio = img.naturalHeight / scaledHeight;
+    const ratio = Math.min(widthRatio, heightRatio);
+
+    // Definiamo una soglia per considerare l'immagine di bassa qualità
+    // Ad esempio, se la scala è maggiore di 2, consideriamo l'immagine sgranata
+    if (ratio < 2) {
+      setIsLowQuality(true);
+    } else {
+      setIsLowQuality(false);
+    }
+  };
 
   const handleChoosePhoto = () => {
     if (fileInputRef.current) {
