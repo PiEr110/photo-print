@@ -3,6 +3,10 @@ import { CiSettings } from "react-icons/ci";
 import { MdOutlineFilterFrames, MdOutlinePhotoCamera } from "react-icons/md";
 import { PiFlowerTulipBold, PiPaintBucketBold } from "react-icons/pi";
 import Photo from "./SubMenu/Photo";
+import Frame from "./SubMenu/Frame";
+import Background from "./SubMenu/Background";
+import Sticker from "./SubMenu/Sticker";
+import Settings from "./SubMenu/Settings";
 
 const MenuPreview = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true);
@@ -97,6 +101,16 @@ const MenuPreview = () => {
         {activeSection && (
           <div className="fixed top-0 left-64 bottom-0 z-40 w-64 bg-gray-100 pt-7 pb-10 m-3 rounded-lg shadow">
             <div className="px-6">{activeSection === "photo" && <Photo />}</div>
+            <div className="px-6">{activeSection === "frame" && <Frame />}</div>
+            <div className="px-6">
+              {activeSection === "background" && <Background />}
+            </div>
+            <div className="px-6">
+              {activeSection === "sticker" && <Sticker />}
+            </div>
+            <div className="px-6">
+              {activeSection === "settings" && <Settings />}
+            </div>
           </div>
         )}
       </div>
