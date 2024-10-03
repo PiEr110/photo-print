@@ -1,4 +1,3 @@
-// src/components/PrintPreview.tsx
 import React, {
   useState,
   useRef,
@@ -10,6 +9,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Cropper from "react-easy-crop";
 import { getCroppedImg, CroppedAreaPixels } from "./cropImage";
 import { RiImageAddFill } from "react-icons/ri";
+import MenuPreview from "./MenuPreview";
 
 interface RouteParams {
   width: string;
@@ -148,154 +148,159 @@ const PrintPreview: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center bg-gray-200 min-h-screen p-4">
-        {/* Preview della foto */}
-        <div
-          className="flex items-center justify-center bg-white border border-black relative"
-          style={{
-            width: scaledWidth,
-            height: scaledHeight,
-            // width: DIV_WIDTH,
-            // height: DIV_HEIGHT,
-            backgroundImage: croppedImage
-              ? `url(${croppedImage})`
-              : image
-              ? `url(${image})`
-              : "none",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            cursor: "default",
-            marginBottom: "20px",
-          }}
-          onContextMenu={image ? handleRightClick : undefined}
-        >
-          {!image && (
-            <RiImageAddFill
-              size={100}
-              onClick={handleChoosePhoto}
-              className="cursor-pointer text-gray-500"
-            />
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
+      <div className="flex flex-row min-h-screen">
+        {/* Menu */}
+        <div className="w-1/2 p-4 bg-gray-200">
+          <MenuPreview />
         </div>
 
-        {/* Pulasanti ordina e indietro */}
-        <div className="flex justify-between p-4 space-x-8">
-          <button
-            className="bg-gray-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-600"
-            onClick={handleGoBack}
+        <div className="flex flex-col items-center justify-center bg-gray-200 w-1/2 p-4">
+          {/* Preview della foto */}
+          <div
+            className="flex items-center justify-center bg-white border border-black relative"
+            style={{
+              width: scaledWidth,
+              height: scaledHeight,
+              // width: DIV_WIDTH,
+              // height: DIV_HEIGHT,
+              backgroundImage: croppedImage
+                ? `url(${croppedImage})`
+                : image
+                ? `url(${image})`
+                : "none",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              cursor: "default",
+              marginBottom: "20px",
+            }}
+            onContextMenu={image ? handleRightClick : undefined}
           >
-            Indietro
-          </button>
-          {image && (
-            <button
-              className="bg-blue-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-600"
-              onClick={handleOrder}
-            >
-              Ordina
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Cropper Modal */}
-      {showCropper && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-4 w-11/12 md:w-2/3 lg:w-1/2">
-            <h2 className="text-xl font-semibold mb-4">Ritaglia l'Immagine</h2>
-            <div className="relative w-full h-64 bg-gray-300">
-              {image && (
-                <Cropper
-                  image={image}
-                  crop={crop}
-                  zoom={zoom}
-                  // aspect={DIV_WIDTH / DIV_HEIGHT}
-                  aspect={scaledWidth / scaledHeight}
-                  onCropChange={setCrop}
-                  onZoomChange={setZoom}
-                  onCropComplete={onCropComplete}
-                />
-              )}
-            </div>
-            <div className="mt-4">
-              <label className="block mb-2">Zoom</label>
-              <input
-                type="range"
-                min={1}
-                max={3}
-                step={0.1}
-                value={zoom}
-                onChange={(e) => setZoom(parseFloat(e.target.value))}
-                className="w-full"
+            {!image && (
+              <RiImageAddFill
+                size={100}
+                onClick={handleChoosePhoto}
+                className="cursor-pointer text-gray-500"
               />
-            </div>
-            <div className="flex justify-end mt-4 space-x-2">
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+            />
+          </div>
+          {/* Pulasanti ordina e indietro */}
+          <div className="flex justify-between p-4 space-x-8">
+            <button
+              className="bg-gray-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-600"
+              onClick={handleGoBack}
+            >
+              Indietro
+            </button>
+            {image && (
               <button
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
-                onClick={handleCancelCrop}
+                className="bg-blue-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-600"
+                onClick={handleOrder}
               >
-                Annulla
+                Ordina
               </button>
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                onClick={handleCrop}
-              >
-                Ritaglia
-              </button>
-            </div>
+            )}
           </div>
         </div>
-      )}
-
-      {/* Context menu */}
-      {contextMenuVisible && contexMenuPosition && (
-        <div
-          className="fixed bg-white border border-gray-300 rounded shadow-lg"
-          style={{ left: contexMenuPosition.x, top: contexMenuPosition.y }}
-          onMouseLeave={handleMenuClose}
-        >
-          <ul className="p-2">
-            <li
-              className="p-1 hover:bg-gray-200 cursor-pointer"
-              onClick={handleChangePhoto}
-            >
-              Cambia foto
-            </li>
-            <li
-              className="p-1 hover:bg-gray-200 cursor-pointer"
-              onClick={handleResizePhoto}
-            >
-              Ritaglia/Ridimensiona
-            </li>
-          </ul>
-        </div>
-      )}
-
-      {/* Message Modal */}
-      {message && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-4 w-11/12 md:w-1/3">
-            <h2 className="text-xl font-semibold mb-4">
-              Immagine Troppo Grande
-            </h2>
-            <p className="mb-4">{message}</p>
-            <div className="flex justify-end">
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                onClick={() => setMessage("")}
-              >
-                Ok
-              </button>
+        {/* Cropper Modal */}
+        {showCropper && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-4 w-11/12 md:w-2/3 lg:w-1/2">
+              <h2 className="text-xl font-semibold mb-4">
+                Ritaglia l'Immagine
+              </h2>
+              <div className="relative w-full h-64 bg-gray-300">
+                {image && (
+                  <Cropper
+                    image={image}
+                    crop={crop}
+                    zoom={zoom}
+                    // aspect={DIV_WIDTH / DIV_HEIGHT}
+                    aspect={scaledWidth / scaledHeight}
+                    onCropChange={setCrop}
+                    onZoomChange={setZoom}
+                    onCropComplete={onCropComplete}
+                  />
+                )}
+              </div>
+              <div className="mt-4">
+                <label className="block mb-2">Zoom</label>
+                <input
+                  type="range"
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  value={zoom}
+                  onChange={(e) => setZoom(parseFloat(e.target.value))}
+                  className="w-full"
+                />
+              </div>
+              <div className="flex justify-end mt-4 space-x-2">
+                <button
+                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                  onClick={handleCancelCrop}
+                >
+                  Annulla
+                </button>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  onClick={handleCrop}
+                >
+                  Ritaglia
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+        {/* Context menu */}
+        {contextMenuVisible && contexMenuPosition && (
+          <div
+            className="fixed bg-white border border-gray-300 rounded shadow-lg"
+            style={{ left: contexMenuPosition.x, top: contexMenuPosition.y }}
+            onMouseLeave={handleMenuClose}
+          >
+            <ul className="p-2">
+              <li
+                className="p-1 hover:bg-gray-200 cursor-pointer"
+                onClick={handleChangePhoto}
+              >
+                Cambia foto
+              </li>
+              <li
+                className="p-1 hover:bg-gray-200 cursor-pointer"
+                onClick={handleResizePhoto}
+              >
+                Ritaglia/Ridimensiona
+              </li>
+            </ul>
+          </div>
+        )}
+        {/* Message Modal */}
+        {message && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-4 w-11/12 md:w-1/3">
+              <h2 className="text-xl font-semibold mb-4">
+                Immagine Troppo Grande
+              </h2>
+              <p className="mb-4">{message}</p>
+              <div className="flex justify-end">
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  onClick={() => setMessage("")}
+                >
+                  Ok
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 };
