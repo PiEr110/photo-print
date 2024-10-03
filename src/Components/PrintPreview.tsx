@@ -10,6 +10,7 @@ import Cropper from "react-easy-crop";
 import { getCroppedImg, CroppedAreaPixels } from "./cropImage";
 import { RiImageAddFill } from "react-icons/ri";
 import MenuPreview from "./MenuPreview";
+import { GalleryContext } from "../context/GalleryContext";
 
 interface RouteParams {
   width: string;
@@ -20,6 +21,9 @@ const PrintPreview: React.FC = () => {
   const { width, height } = useParams<RouteParams>();
   const navigate = useNavigate();
 
+  const { images } = React.useContext(GalleryContext)!;
+
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [image, setImage] = useState<string | null>(null);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [croppedAreaPixels, setCroppedAreaPixels] =
@@ -40,12 +44,12 @@ const PrintPreview: React.FC = () => {
   const MAX_HEIGHT: number = 650;
 
   const scaleFactor = Math.min(
-    MAX_WIDTH / (width ? parseInt(width) : 0),
-    MAX_HEIGHT / (height ? parseInt(height) : 0)
+    MAX_WIDTH / (width ? parseInt(width) : 1),
+    MAX_HEIGHT / (height ? parseInt(height) : 1)
   );
 
-  const scaledWidth = (width ? parseInt(width) : 0) * scaleFactor;
-  const scaledHeight = (height ? parseInt(height) : 0) * scaleFactor;
+  const scaledWidth = (width ? parseInt(width) : 1) * scaleFactor;
+  const scaledHeight = (height ? parseInt(height) : 1) * scaleFactor;
 
   // const CM_TO_PX = 35.4331;
   // const DIV_WIDTH: number = width ? parseInt(width) * CM_TO_PX : 704;
@@ -146,23 +150,46 @@ const PrintPreview: React.FC = () => {
     };
   }, [croppedImage, image]);
 
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const data = event.dataTransfer.getData("text/plain");
+    if (data) {
+      setImage(data);
+      setCroppedImage(null);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+  };
+
   return (
     <>
       <div className="flex flex-row min-h-screen">
         {/* Menu */}
-        <div className="w-1/2 p-4 bg-gray-200">
+        <div className="w-1/4 p-4 bg-gray-200">
           <MenuPreview />
         </div>
 
-        <div className="flex flex-col items-center justify-center bg-gray-200 w-1/2 p-4">
+        <div className="flex flex-col items-center justify-center bg-gray-200 w-3/4 p-4">
           {/* Preview della foto */}
           <div
-            className="flex items-center justify-center bg-white border border-black relative"
+            className={`flex items-center justify-center bg-white border border-black relative ${
+              isDragging ? "border-dashed border-blue-500" : ""
+            }`}
             style={{
               width: scaledWidth,
               height: scaledHeight,
-              // width: DIV_WIDTH,
-              // height: DIV_HEIGHT,
               backgroundImage: croppedImage
                 ? `url(${croppedImage})`
                 : image
@@ -174,6 +201,10 @@ const PrintPreview: React.FC = () => {
               marginBottom: "20px",
             }}
             onContextMenu={image ? handleRightClick : undefined}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
           >
             {!image && (
               <RiImageAddFill
