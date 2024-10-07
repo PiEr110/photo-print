@@ -22,26 +22,18 @@ const MenuPreview = () => {
   return (
     <>
       <div className="py-16 text-center">
-        {/* <button
-          className="fixed bottom-4 left-4 z-50 py-2 px-3 inline-flex justify-center items-center gap-x-2 text-start bg-gray-800 text-white text-sm font-medium rounded-lg shadow-sm align-middle hover:bg-gray-950 focus:outline-none focus:bg-gray-900"
-          onClick={handleClickMenu}
-        >
-          {!isMenuOpen ? <FaPlus size={30} /> : <IoClose size={30} />}
-          {!isMenuOpen ? "Aggiungi" : "Chiudi"}
-        </button> */}
-
-        <div className="fixed top-0 left-0 bottom-0  w-64 bg-white border-e border-gray-200 pt-7 overflow-y-auto lg:block lg:translate-x-0 m-3 rounded-lg shadow ">
+        <div className="fixed bottom-0 left-0 top-0 m-3 w-64 overflow-y-auto rounded-lg border-e border-gray-200 bg-white pt-7 shadow lg:block lg:translate-x-0">
           <div className="px-6">
-            <p className="flex-none font-semibold text-xl text-black cursor-default">
+            <p className="flex-none cursor-default text-xl font-semibold text-black">
               Idea on Canvas
             </p>
           </div>
 
-          <nav className="p-6 w-full flex flex-col flex-wrap">
+          <nav className="flex w-full flex-col flex-wrap p-6">
             <ul className="space-y-3">
               <li>
                 <button
-                  className="w-full flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-gray-700 rounded-lg hover:bg-gray-200 cursor-pointer"
+                  className="flex w-full cursor-pointer items-center gap-x-3.5 rounded-lg bg-gray-100 px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-200"
                   onClick={() => handleClickSection("photo")}
                 >
                   <MdOutlinePhotoCamera size={20} />
@@ -51,7 +43,7 @@ const MenuPreview = () => {
 
               <li>
                 <button
-                  className="w-full flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-gray-700 rounded-lg hover:bg-gray-200 cursor-pointer"
+                  className="flex w-full cursor-pointer items-center gap-x-3.5 rounded-lg bg-gray-100 px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-200"
                   onClick={() => handleClickSection("frame")}
                 >
                   <MdOutlineFilterFrames size={20} />
@@ -61,7 +53,7 @@ const MenuPreview = () => {
 
               <li>
                 <button
-                  className="w-full flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-gray-700 rounded-lg hover:bg-gray-200 cursor-pointer"
+                  className="flex w-full cursor-pointer items-center gap-x-3.5 rounded-lg bg-gray-100 px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-200"
                   onClick={() => handleClickSection("background")}
                 >
                   <PiPaintBucketBold size={20} />
@@ -71,7 +63,7 @@ const MenuPreview = () => {
 
               <li>
                 <button
-                  className="w-full flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-gray-700 rounded-lg hover:bg-gray-200 cursor-pointer"
+                  className="flex w-full cursor-pointer items-center gap-x-3.5 rounded-lg bg-gray-100 px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-200"
                   onClick={() => handleClickSection("sticker")}
                 >
                   <PiFlowerTulipBold size={20} />
@@ -81,7 +73,7 @@ const MenuPreview = () => {
 
               <li>
                 <button
-                  className="w-full flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-gray-700 rounded-lg hover:bg-gray-200 cursor-pointer"
+                  className="flex w-full cursor-pointer items-center gap-x-3.5 rounded-lg bg-gray-100 px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-200"
                   onClick={() => handleClickSection("settings")}
                 >
                   <CiSettings size={20} />
@@ -94,7 +86,7 @@ const MenuPreview = () => {
 
         {/* Sezione menu accanto al menu principale */}
         {activeSection && (
-          <div className="fixed top-0 left-64 bottom-0 z-40 w-64 bg-gray-100 pt-7 pb-10 m-3 rounded-lg shadow">
+          <div className="fixed bottom-0 left-64 top-0 z-40 m-3 w-64 rounded-lg bg-gray-100 pb-10 pt-7 shadow">
             <div className="px-6">{activeSection === "photo" && <Photo />}</div>
             <div className="px-6">{activeSection === "frame" && <Frame />}</div>
             <div className="px-6">
