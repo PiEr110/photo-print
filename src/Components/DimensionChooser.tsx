@@ -52,18 +52,20 @@ const DimensionChooser: React.FC = () => {
       </div>
 
       {/* Right Column: Options */}
-      <div className="w-1/2 ml-8">
-        <p className="font-bold text-black text-xl mb-4">Stampa su tela</p>
+      <div className="w-1/2 ml-3">
+        <p className="font-bold text-black text-xl mb-4 text-center">
+          Stampa su tela
+        </p>
 
         {/* Box formato */}
         <div className="bg-white border border-gray-300 p-4 mb-6 shadow rounded">
           <p className="font-semibold mb-2">Formato (cm)</p>
-          <div className="space-x-4 flex-wrap space-y-4">
+          <div className="flex flex-wrap ">
             {predefinedDimensions.map((dim) => (
               <button
                 key={`${dim.width}x${dim.height}`}
                 onClick={() => handleDimensionChange(dim)}
-                className={`px-4 py-2 border rounded ${
+                className={`m-2.5 px-4 py-2 border rounded ${
                   selectedDimension.width === dim.width &&
                   selectedDimension.height === dim.height
                     ? "bg-blue-500 text-white"
@@ -88,7 +90,7 @@ const DimensionChooser: React.FC = () => {
                 name="bordo"
                 className="mr-2"
                 defaultChecked
-                // Aggiungi la gestione dello stato se necessario
+                // Aggiungere la gestione del bordo se serve
               />
               Allungato
             </label>
@@ -114,7 +116,7 @@ const DimensionChooser: React.FC = () => {
                 name="spessore"
                 className="mr-2"
                 defaultChecked
-                // Aggiungi la gestione dello stato se necessario
+                // Aggiungere la gestione dello spessore se necessario
               />
               2 cm
             </label>

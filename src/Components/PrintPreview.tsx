@@ -48,6 +48,7 @@ const PrintPreview: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Conversione da cm a pixel (1 cm ≈ 35.4331 px)
+
   const MAX_WIDTH: number = 900;
   const MAX_HEIGHT: number = 650;
 
