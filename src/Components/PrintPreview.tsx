@@ -148,25 +148,26 @@ const PrintPreview = () => {
 
         <div className="flex w-3/4 flex-col items-center justify-center bg-gray-200 p-4">
           {/* Preview della foto */}
-
           {showCropper ? (
             <FixedCropper
+              className="bg-white"
               src={image}
               stencilProps={{
                 handlers: false,
                 lines: false,
                 movable: true,
                 resizable: false,
+                grid: true,
               }}
-              stencilSize={{ width: 300, height: 300 }}
+              stencilSize={{ width: scaledWidth, height: scaledHeight }}
               imageRestriction={ImageRestriction.stencil}
             />
           ) : (
             <div
               className="relative flex items-center justify-center border border-black bg-white"
               style={{
-                width: scaledWidth,
-                height: scaledHeight,
+                width: MAX_WIDTH,
+                height: MAX_HEIGHT,
                 backgroundImage: croppedImage
                   ? `url(${croppedImage})`
                   : image
@@ -195,6 +196,7 @@ const PrintPreview = () => {
               />
             </div>
           )}
+
           {/* Pulsanti ordina e indietro */}
           <div className="flex justify-between space-x-8 p-4">
             <button
