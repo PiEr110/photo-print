@@ -113,7 +113,10 @@ const PrintPreview = () => {
         <div className="w-1/4 bg-gray-200 p-4">
           <MenuPreview />
         </div> */}
-        <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-200 p-4">
+        <div
+          className="flex h-screen w-screen flex-col items-center justify-center bg-gray-200 p-4"
+          onContextMenu={image ? handleRightClick : undefined}
+        >
           {/* Preview della foto */}
           {showCropper ? (
             <FixedCropper
@@ -143,7 +146,7 @@ const PrintPreview = () => {
                 cursor: "default",
                 marginBottom: "20px",
               }}
-              onContextMenu={image ? handleRightClick : undefined}
+              // onContextMenu={image ? handleRightClick : undefined}
             >
               {!image && (
                 <RiImageAddFill
