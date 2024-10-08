@@ -1,15 +1,17 @@
-import React, {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { CroppedAreaPixels, getCroppedImg } from "./cropImage";
+// import { CroppedAreaPixels, getCroppedImg } from "./cropImage";
 import MenuPreview from "./MenuPreview";
 import { RiImageAddFill } from "react-icons/ri";
-import { FixedCropper, ImageRestriction } from "react-advanced-cropper";
+import {
+  Coordinates,
+  Cropper,
+  CropperImage,
+  CropperRef,
+  FixedCropper,
+  FixedCropperRef,
+  mergeRefs,
+} from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
 
 interface RouteParams {
@@ -23,9 +25,11 @@ const PrintPreview = () => {
   const navigate = useNavigate();
 
   const [image, setImage] = useState<string | null>(null);
-  const [croppedAreaPixels, setCroppedAreaPixels] =
-    useState<CroppedAreaPixels | null>(null);
+
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
   const [croppedImage, setcroppedImage] = useState<string | null>(null);
+  console.log("🚀 ~ PrintPreview ~ croppedImage:", croppedImage);
+
   const [showCropper, setShowCropper] = useState<boolean>(false);
   const [contextMenuVisible, setContextMenuVisible] = useState<boolean>(false);
   const [contextMenuPosition, setContextMenuPosition] = useState<{
@@ -34,6 +38,7 @@ const PrintPreview = () => {
   } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const cropperRef = useRef<FixedCropperRef>(null);
 
   const MAX_WIDTH = 900;
   const MAX_HEIGHT = 650;
@@ -74,29 +79,37 @@ const PrintPreview = () => {
     }
   };
 
-  const onCropComplete = useCallback(
-    (croppedArea: any, croppedAreaPixels: CroppedAreaPixels) => {
-      setCroppedAreaPixels(croppedAreaPixels);
-    },
-    [],
-  );
-
-  const handleCrop = useCallback(async () => {
-    if (image && croppedAreaPixels) {
-      try {
-        const croppedImageUrl = await getCroppedImg(image, croppedAreaPixels);
-        setcroppedImage(croppedImageUrl);
-        setShowCropper(false);
-      } catch (error) {
-        console.error(error);
-      }
+  const onCrop = () => {
+    if (cropperRef.current) {
+      setCoordinates(cropperRef.current.getCoordinates());
+      setcroppedImage(cropperRef.current.getCanvas()?.toDataURL() as string);
+      // setcroppedImage(cropperRef.current.getImage());
     }
-  }, [image, croppedAreaPixels]);
-
-  const handleCancelCrop = () => {
-    setShowCropper(false);
-    setImage(null);
   };
+
+  // const onCropComplete = useCallback(
+  //   (croppedArea: any, croppedAreaPixels: CroppedAreaPixels) => {
+  //     setCroppedAreaPixels(croppedAreaPixels);
+  //   },
+  //   [],
+  // );
+
+  // const handleCrop = useCallback(async () => {
+  //   if (image && croppedAreaPixels) {
+  //     try {
+  //       const croppedImageUrl = await getCroppedImg(image, croppedAreaPixels);
+  //       setcroppedImage(croppedImageUrl);
+  //       setShowCropper(false);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // }, [image, croppedAreaPixels]);
+
+  // const handleCancelCrop = () => {
+  //   setShowCropper(false);
+  //   setImage(null);
+  // };
 
   const handleOrder = () => {
     navigate("/confirmation");
@@ -126,17 +139,17 @@ const PrintPreview = () => {
     navigate("/");
   };
 
-  useEffect(() => {
-    return () => {
-      if (croppedImage) {
-        URL.revokeObjectURL(croppedImage);
-      }
+  // useEffect(() => {
+  //   return () => {
+  //     if (croppedImage) {
+  //       URL.revokeObjectURL(croppedImage);
+  //     }
 
-      if (image) {
-        URL.revokeObjectURL(image);
-      }
-    };
-  }, [croppedImage, image]);
+  //     if (image) {
+  //       URL.revokeObjectURL(image);
+  //     }
+  //   };
+  // }, [croppedImage, image]);
 
   return (
     <>
@@ -150,17 +163,15 @@ const PrintPreview = () => {
           {/* Preview della foto */}
           {showCropper ? (
             <FixedCropper
-              className="bg-white"
+              ref={cropperRef}
               src={image}
               stencilProps={{
                 handlers: false,
-                lines: false,
                 movable: true,
                 resizable: false,
                 grid: true,
               }}
               stencilSize={{ width: scaledWidth, height: scaledHeight }}
-              imageRestriction={ImageRestriction.stencil}
             />
           ) : (
             <div
@@ -208,7 +219,7 @@ const PrintPreview = () => {
             {image && (
               <button
                 className="rounded-full bg-blue-500 px-6 py-3 text-white shadow-lg hover:bg-blue-600"
-                onClick={handleOrder}
+                onClick={onCrop}
               >
                 Ordina
               </button>
