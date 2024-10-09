@@ -1,23 +1,26 @@
-import React, { ChangeEvent, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import MenuPreview from "./MenuPreview";
+import React, { ChangeEvent, useContext, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import { RiImageAddFill } from "react-icons/ri";
 import { FixedCropper, FixedCropperRef } from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
+import { DimensionContext } from "../context/DimensionContext";
+import { p } from "framer-motion/client";
 
-interface RouteParams {
-  [key: string]: string;
-  width: string;
-  height: string;
-}
+// interface RouteParams {
+//   [key: string]: string;
+//   width: string;
+//   height: string;
+// }
 
 const PrintPreview = () => {
-  const { width, height } = useParams<RouteParams>();
+  // const { width, height } = useParams<RouteParams>();
+  const { width, height, proportion } = useContext(DimensionContext);
+  console.log("🚀 ~ PrintPreview ~ proportion:", proportion);
+
   const navigate = useNavigate();
 
   const [image, setImage] = useState<string | null>(null);
 
-  // const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
   const [croppedImage, setcroppedImage] = useState<string>();
 
   const [showCropper, setShowCropper] = useState<boolean>(false);
@@ -33,11 +36,18 @@ const PrintPreview = () => {
   const MAX_WIDTH = 900;
   const MAX_HEIGHT = 650;
   const scaleFactor = Math.min(
-    MAX_WIDTH / (width ? parseInt(width) : 1),
-    MAX_HEIGHT / (height ? parseInt(height) : 1),
+    MAX_WIDTH / (width ? width : 1),
+    MAX_HEIGHT / (height ? height : 1),
   );
-  const scaledWidth = (width ? parseInt(width) : 1) * scaleFactor;
-  const scaledHeight = (height ? parseInt(height) : 1) * scaleFactor;
+  const scaledWidth = (width ? width : 1) * scaleFactor;
+  const scaledHeight = (height ? height : 1) * scaleFactor;
+
+  const refactorRatio: (proportion: string) => number = (
+    proportion: string,
+  ) => {
+    const [numerator, denominator] = proportion.split(":").map(Number);
+    return numerator / denominator;
+  };
 
   const handleChoosePhoto = () => {
     if (fileInputRef.current) {
@@ -127,6 +137,7 @@ const PrintPreview = () => {
                 movable: true,
                 resizable: false,
                 grid: true,
+                aspectRatio: refactorRatio(proportion ?? "1:1"),
               }}
               stencilSize={{ width: scaledWidth, height: scaledHeight }}
             />
