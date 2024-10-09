@@ -1,21 +1,19 @@
-import React, { ChangeEvent, useContext, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useNavigate } from "react-router";
 import { RiImageAddFill } from "react-icons/ri";
 import { FixedCropper, FixedCropperRef } from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
 import { DimensionContext } from "../context/DimensionContext";
-import { p } from "framer-motion/client";
-
-// interface RouteParams {
-//   [key: string]: string;
-//   width: string;
-//   height: string;
-// }
+import localforage from "localforage";
 
 const PrintPreview = () => {
-  // const { width, height } = useParams<RouteParams>();
   const { width, height, proportion } = useContext(DimensionContext);
-  console.log("🚀 ~ PrintPreview ~ proportion:", proportion);
 
   const navigate = useNavigate();
 
@@ -69,9 +67,12 @@ const PrintPreview = () => {
           if (img.width <= scaledWidth && img.height <= scaledHeight) {
             setImage(result);
             setcroppedImage("");
+            saveImage("printPreview_image", result);
+            saveImage("printPreview_croppedImage", null);
           } else {
             setShowCropper(true);
             setImage(result);
+            saveImage("printPreview_image", result);
           }
         };
       };
@@ -81,10 +82,14 @@ const PrintPreview = () => {
 
   const onCrop = () => {
     if (cropperRef.current) {
-      // setCoordinates(cropperRef.current.getCoordinates());
-      setcroppedImage(cropperRef.current.getCanvas()?.toDataURL());
-      handleOrder();
-      // setcroppedImage(cropperRef.current.getImage());
+      const canvas = cropperRef.current.getCanvas();
+
+      if (canvas) {
+        const croppedDataUrl = canvas.toDataURL();
+        setcroppedImage(croppedDataUrl);
+        saveImage("printPreview_croppedImage", croppedDataUrl);
+        handleOrder();
+      }
     }
   };
 
@@ -115,6 +120,44 @@ const PrintPreview = () => {
   const handleGoBack = () => {
     navigate("/");
   };
+
+  const saveImage = async (key: string, data: string | null) => {
+    try {
+      if (data) {
+        await localforage.setItem(key, data);
+      } else {
+        await localforage.removeItem(key);
+      }
+    } catch (error) {
+      console.error(`Errore nel salvare ${key}:`, error);
+    }
+  };
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        const storedImage =
+          await localforage.getItem<string>("printPreview_image");
+        const storedCroppedImage = await localforage.getItem<string>(
+          "printPreview_croppedImage",
+        );
+
+        if (storedImage) {
+          setImage(storedImage);
+        }
+
+        if (storedCroppedImage) {
+          setcroppedImage(storedCroppedImage);
+        }
+      } catch (error) {
+        console.error("Errore nel caricare le immagini:", error);
+      }
+    };
+    loadImage();
+    localforage
+      .getItem("printPreview_image")
+      .then((prop) => prop && setShowCropper(true));
+  }, []);
 
   return (
     <>
