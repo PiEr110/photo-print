@@ -11,6 +11,7 @@ import { FixedCropper, FixedCropperRef } from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
 import { DimensionContext } from "../context/DimensionContext";
 import localforage from "localforage";
+import UtilityBar from "./UtilityBar";
 
 const PrintPreview = () => {
   const { width, height, proportion } = useContext(DimensionContext);
@@ -166,10 +167,16 @@ const PrintPreview = () => {
         <div className="w-1/4 bg-gray-200 p-4">
           <MenuPreview />
         </div> */}
+
         <div
           className="flex h-screen w-screen flex-col items-center justify-center bg-gray-200 p-4"
           onContextMenu={image ? handleRightClick : undefined}
         >
+          <UtilityBar
+            onBack={handleGoBack}
+            onOrder={handleOrder}
+            onPhotoChange={handleChangePhoto}
+          />
           {/* Preview della foto */}
           {showCropper ? (
             <FixedCropper
@@ -220,7 +227,7 @@ const PrintPreview = () => {
           )}
 
           {/* Pulsanti ordina e indietro */}
-          <div className="flex justify-between space-x-8 p-4">
+          {/* <div className="flex justify-between space-x-8 p-4">
             <button
               className="rounded-full bg-gray-500 px-6 py-3 text-white shadow-lg hover:bg-gray-600"
               onClick={handleGoBack}
@@ -235,10 +242,10 @@ const PrintPreview = () => {
                 Ordina
               </button>
             )}
-          </div>
+          </div> */}
         </div>
         {/* Context Menu */}
-        {contextMenuVisible && contextMenuPosition && (
+        {/* {contextMenuVisible && contextMenuPosition && (
           <div
             className="fixed rounded border border-gray-300 bg-white shadow-lg"
             style={{ left: contextMenuPosition.x, top: contextMenuPosition.y }}
@@ -259,7 +266,7 @@ const PrintPreview = () => {
               </li>
             </ul>
           </div>
-        )}
+        )} */}
       </div>
     </>
   );
