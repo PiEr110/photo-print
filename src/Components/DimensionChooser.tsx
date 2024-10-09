@@ -1,22 +1,39 @@
 // src/components/DimensionChooser.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Accordion, AccordionItem } from "@nextui-org/accordion";
 
-const predefinedDimensions: Array<{ width: number; height: number }> = [
-  { width: 20, height: 20 },
-  { width: 20, height: 30 },
-  { width: 30, height: 30 },
-  { width: 30, height: 40 },
-  { width: 40, height: 40 },
-  { width: 40, height: 60 },
-  { width: 50, height: 50 },
-  { width: 50, height: 70 },
-  { width: 50, height: 100 },
-  { width: 60, height: 90 },
-  { width: 90, height: 90 },
-  { width: 90, height: 120 },
-  { width: 120, height: 120 },
-];
+type ProporzioneDimensioni = {
+  [key: string]: string[];
+};
+
+const proporzioneDimensioni: ProporzioneDimensioni = {
+  "1:1": ["50x50", "70x70", "90x90", "110x110", "140x140"],
+  "2:3": ["40x60", "80x120", "60x90", "100x150"],
+  "3:2": ["60x40", "150x100", "120x80", "90x60"],
+  "5:7": ["50x70"],
+  "7:5": ["70x50"],
+  "7:10": ["70x100"],
+  "10:7": ["100x70"],
+  "1:2": ["50x100", "75x150", "100x200"],
+  "2:1": ["100x50", "150x75", "200x100"],
+};
+
+// const predefinedDimensions: Array<{ width: number; height: number }> = [
+//   { width: 20, height: 20 },
+//   { width: 20, height: 30 },
+//   { width: 30, height: 30 },
+//   { width: 30, height: 40 },
+//   { width: 40, height: 40 },
+//   { width: 40, height: 60 },
+//   { width: 50, height: 50 },
+//   { width: 50, height: 70 },
+//   { width: 50, height: 100 },
+//   { width: 60, height: 90 },
+//   { width: 90, height: 90 },
+//   { width: 90, height: 120 },
+//   { width: 120, height: 120 },
+// ];
 
 const DimensionChooser: React.FC = () => {
   const [selectedDimension, setSelectedDimension] = useState<{
@@ -42,22 +59,20 @@ const DimensionChooser: React.FC = () => {
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100 p-8">
-      {/* Left Column: Image */}
-      <div className="flex w-1/2 flex-col items-center">
+      {/* <div className="flex w-1/2 flex-col items-center">
         <img
           src={`/images/${selectedDimension.width}_${selectedDimension.height}.jpeg`}
           alt={`Stampa su tela ${selectedDimension.width}x${selectedDimension.height}`}
           className="h-80 w-80 border border-gray-300 object-cover"
         />
-      </div>
+      </div> */}
 
       {/* Right Column: Options */}
-      <div className="ml-3 w-1/2">
+      {/* <div className="ml-3 w-1/2">
         <p className="mb-4 text-center text-xl font-bold text-black">
           Stampa su tela
         </p>
 
-        {/* Box formato */}
         <div className="mb-6 rounded border border-gray-300 bg-white p-4 shadow">
           <p className="mb-2 font-semibold">Formato (cm)</p>
           <div className="flex flex-wrap">
@@ -78,11 +93,9 @@ const DimensionChooser: React.FC = () => {
           </div>
         </div>
 
-        {/* Box bordo */}
         <div className="mb-6 rounded border border-gray-300 bg-white p-4 shadow">
           <p className="mb-2 font-semibold">Bordo</p>
 
-          {/* Opzioni bordo */}
           <div className="flex flex-col">
             <label className="mb-2 flex items-center">
               <input
@@ -90,7 +103,6 @@ const DimensionChooser: React.FC = () => {
                 name="bordo"
                 className="mr-2"
                 defaultChecked
-                // Aggiungere la gestione del bordo se serve
               />
               Allungato
             </label>
@@ -105,10 +117,8 @@ const DimensionChooser: React.FC = () => {
           </div>
         </div>
 
-        {/* Box spessore */}
         <div className="mb-6 rounded border border-gray-300 bg-white p-4 shadow">
           <p className="mb-2 font-semibold">Spessore</p>
-          {/* Opzioni spessore */}
           <div className="flex flex-col">
             <label className="mb-2 flex items-center">
               <input
@@ -116,7 +126,6 @@ const DimensionChooser: React.FC = () => {
                 name="spessore"
                 className="mr-2"
                 defaultChecked
-                // Aggiungere la gestione dello spessore se necessario
               />
               2 cm
             </label>
@@ -135,6 +144,31 @@ const DimensionChooser: React.FC = () => {
             Continua
           </button>
         </div>
+      </div> */}
+
+      <div className="w-3/4 rounded-lg bg-white p-4 shadow-md">
+        <Accordion>
+          {Object.entries(proporzioneDimensioni).map(
+            ([proporzione, dimensioni]) => (
+              <AccordionItem
+                key={proporzione}
+                title={`Proporzione ${proporzione}`}
+                className="mb-2 rounded-lg border border-gray-300 pl-3 shadow-sm"
+              >
+                <ul className="grid grid-cols-2 gap-4 bg-gray-50 p-4">
+                  {dimensioni.map((dimensione) => (
+                    <button
+                      className="block w-full rounded-lg border border-gray-300 bg-white p-2 text-center text-sm font-semibold text-gray-800 shadow hover:border-blue-500 hover:bg-gray-100 focus:ring focus:ring-blue-200"
+                      key={dimensione}
+                    >
+                      {dimensione + " cm"}
+                    </button>
+                  ))}
+                </ul>
+              </AccordionItem>
+            ),
+          )}
+        </Accordion>
       </div>
     </div>
   );
