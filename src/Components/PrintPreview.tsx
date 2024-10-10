@@ -21,13 +21,7 @@ const PrintPreview = () => {
   const [image, setImage] = useState<string | null>(null);
 
   const [croppedImage, setcroppedImage] = useState<string>();
-
   const [showCropper, setShowCropper] = useState<boolean>(false);
-  const [contextMenuVisible, setContextMenuVisible] = useState<boolean>(false);
-  const [contextMenuPosition, setContextMenuPosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const cropperRef = useRef<FixedCropperRef>(null);
@@ -54,6 +48,33 @@ const PrintPreview = () => {
     }
   };
 
+  // const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files && event.target.files[0];
+
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = async () => {
+  //       const result = reader.result as string;
+  //       const img = new Image();
+  //       img.src = result;
+
+  //       img.onload = () => {
+  //         if (img.width <= scaledWidth && img.height <= scaledHeight) {
+  //           setImage(result);
+  //           setcroppedImage("");
+  //           saveImage("printPreview_image", result);
+  //           saveImage("printPreview_croppedImage", null);
+  //         } else {
+  //           setShowCropper(true);
+  //           setImage(result);
+  //           saveImage("printPreview_image", result);
+  //         }
+  //       };
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
 
@@ -65,16 +86,9 @@ const PrintPreview = () => {
         img.src = result;
 
         img.onload = () => {
-          if (img.width <= scaledWidth && img.height <= scaledHeight) {
-            setImage(result);
-            setcroppedImage("");
-            saveImage("printPreview_image", result);
-            saveImage("printPreview_croppedImage", null);
-          } else {
-            setShowCropper(true);
-            setImage(result);
-            saveImage("printPreview_image", result);
-          }
+          setImage(result);
+          setShowCropper(true);
+          saveImage("printPreview_image", result);
         };
       };
       reader.readAsDataURL(file);
@@ -93,30 +107,31 @@ const PrintPreview = () => {
       }
     }
   };
+  // const onCrop = () => {
+  //   if (cropperRef.current) {
+  //     const canvas = cropperRef.current.getCanvas();
+
+  //     if (canvas) {
+  //       const croppedDataUrl = canvas.toDataURL();
+  //       setcroppedImage(croppedDataUrl);
+  //       saveImage("printPreview_croppedImage", croppedDataUrl);
+  //       handleOrder();
+  //     }
+  //   }
+  // };
 
   const handleOrder = () => {
     navigate("/confirmation");
   };
 
-  const handleRightClick = (event: React.MouseEvent) => {
-    event.preventDefault();
-    setContextMenuVisible(true);
-    setContextMenuPosition({ x: event.clientX, y: event.clientY });
-  };
-
-  const handleMenuClose = () => {
-    setContextMenuVisible(false);
-  };
-
   const handleChangePhoto = () => {
     handleChoosePhoto();
-    handleMenuClose();
   };
 
-  const handleresizePhoto = () => {
-    setShowCropper(true);
-    handleMenuClose();
-  };
+  // const handleresizePhoto = () => {
+  //   setShowCropper(true);
+  //   handleMenuClose();
+  // };
 
   const handleGoBack = () => {
     navigate("/");
@@ -168,13 +183,10 @@ const PrintPreview = () => {
           <MenuPreview />
         </div> */}
 
-        <div
-          className="flex h-screen w-screen flex-col items-center justify-center bg-gray-200 p-4"
-          onContextMenu={image ? handleRightClick : undefined}
-        >
+        <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-200 p-4">
           <UtilityBar
             onBack={handleGoBack}
-            onOrder={handleOrder}
+            onOrder={onCrop}
             onPhotoChange={handleChangePhoto}
           />
           {/* Preview della foto */}
@@ -216,15 +228,15 @@ const PrintPreview = () => {
                   className="cursor-pointer text-gray-500"
                 />
               )}
-              <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                style={{ display: "none" }}
-              />
             </div>
           )}
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
 
           {/* Pulsanti ordina e indietro */}
           {/* <div className="flex justify-between space-x-8 p-4">
