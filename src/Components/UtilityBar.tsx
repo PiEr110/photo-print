@@ -32,72 +32,59 @@ const UtilityBar: React.FC<UtilityBarProps> = ({
   onFLipHorizontal,
 }) => {
   return (
-    <div className="flex w-[64rem] items-center justify-between bg-gray-200 p-4">
-      <div className="flex flex-row">
-        <Button radius="lg" onClick={onBack} className="bg-black text-white">
+    <div className="flex w-full flex-col items-center justify-between space-y-4 bg-gray-200 px-6 md:flex-row md:space-x-4 md:space-y-0">
+      {/*  */}
+      {/* Sezione sinistra --> torna indietro */}
+      <div className="flex w-full justify-center md:w-auto md:justify-start">
+        <Button radius="lg" onClick={onBack}>
           <MoveLeft />
         </Button>
       </div>
-
-      <div className="flex flex-row space-x-3">
+      {/*  */}
+      {/* Sezione centrale --> controlli */}
+      <div className="flex w-full flex-row justify-center space-x-3 md:w-auto">
+        {/*  */}
         {/* Flip orizzontale  */}
         <Tooltip showArrow={true} content="Capovolgi dx/sx" placement="bottom">
-          <Button
-            isIconOnly
-            onClick={onFLipHorizontal}
-            className="bg-black text-white"
-          >
+          <Button isIconOnly onClick={onFLipHorizontal}>
             <AlignHorizontalJustifyCenter />
           </Button>
         </Tooltip>
+        {/*  */}
         {/* Flip verticale */}
         <Tooltip
           showArrow={true}
           content="Capovolgi sopra/sotto"
           placement="bottom"
         >
-          <Button
-            isIconOnly
-            onClick={onFlipVertical}
-            className="bg-black text-white"
-          >
+          <Button isIconOnly onClick={onFlipVertical}>
             <AlignVerticalJustifyCenter />
           </Button>
         </Tooltip>
+        {/*  */}
         {/* Routa destra */}
         <Tooltip showArrow={true} content="Ruota a destra" placement="bottom">
-          <Button
-            isIconOnly
-            onClick={onRotateRight}
-            className="bg-black text-white"
-          >
+          <Button isIconOnly onClick={onRotateRight}>
             <RotateCw />
           </Button>
         </Tooltip>
+        {/*  */}
         {/* Routa sinistra */}
         <Tooltip showArrow={true} content="Ruota a sinistra" placement="bottom">
-          <Button
-            isIconOnly
-            onClick={onRotateLeft}
-            className="bg-black text-white"
-          >
+          <Button isIconOnly onClick={onRotateLeft}>
             <RotateCcw />
           </Button>
         </Tooltip>
-
+        {/*  */}
         {/* Cambia immagine */}
-        <Button
-          color="primary"
-          radius="lg"
-          onClick={onPhotoChange}
-          className="bg-black text-white"
-        >
+        <Button radius="lg" onClick={onPhotoChange}>
           <Image />
           Cambia foto
         </Button>
       </div>
-
-      <div className="flex flex-row">
+      {/*  */}
+      {/* Sezione destra --> ordina */}
+      <div className="flex w-full justify-center md:w-auto md:justify-end">
         <Button
           color="success"
           radius="lg"

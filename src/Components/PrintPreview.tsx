@@ -151,46 +151,32 @@ const PrintPreview = () => {
             onRotateLeft={() => rotate(-90)}
           />
           {/* Preview della foto */}
-          {showCropper ? (
-            <FixedCropper
-              ref={cropperRef}
-              src={image}
-              stencilProps={{
-                handlers: false,
-                movable: true,
-                resizable: false,
-                grid: true,
-                aspectRatio: refactorRatio(proportion ?? "1:1"),
-              }}
-              stencilSize={{ width: scaledWidth, height: scaledHeight }}
-            />
-          ) : (
-            <div
-              className="relative flex items-center justify-center border border-black bg-white"
-              style={{
-                width: MAX_WIDTH,
-                height: MAX_HEIGHT,
-                backgroundImage: croppedImage
-                  ? `url(${croppedImage})`
-                  : image
-                    ? `url(${image})`
-                    : "none",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                cursor: "default",
-                marginBottom: "20px",
-              }}
-              // onContextMenu={image ? handleRightClick : undefined}
-            >
-              {!image && (
-                <RiImageAddFill
-                  size={100}
-                  onClick={handleChoosePhoto}
-                  className="cursor-pointer text-gray-500"
+          <div className="relative m-6 flex h-[80vh] w-[80vw] items-center justify-center rounded-xl border border-black bg-white">
+            {showCropper ? (
+              <div className="relative h-full w-full">
+                <FixedCropper
+                  ref={cropperRef}
+                  src={image}
+                  stencilProps={{
+                    handlers: false,
+                    movable: true,
+                    resizable: false,
+                    grid: true,
+                    aspectRatio: refactorRatio(proportion ?? "1:1"),
+                  }}
+                  stencilSize={{ width: scaledWidth, height: scaledHeight }}
+                  className="h-full w-full rounded-xl"
                 />
-              )}
-            </div>
-          )}
+              </div>
+            ) : !image ? (
+              <RiImageAddFill
+                size={100}
+                onClick={handleChoosePhoto}
+                className="cursor-pointer text-gray-500"
+              />
+            ) : null}
+          </div>
+
           <input
             type="file"
             accept="image/*"
@@ -198,8 +184,6 @@ const PrintPreview = () => {
             onChange={handleFileChange}
             style={{ display: "none" }}
           />
-
-          {/* Pulsanti ordina e indietro */}
         </div>
       </div>
     </>
