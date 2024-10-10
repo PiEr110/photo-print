@@ -7,27 +7,108 @@ import { DimensionContext } from "../context/DimensionContext";
 import localforage from "localforage";
 import UtilityBar from "./UtilityBar";
 
+interface Size {
+  width: number;
+  height: number;
+}
+
+const calculateResponsiveSize = (vw: number, vh: number): Size => {
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  const widthInPixels = (vw / 100) * viewportWidth;
+  const heightInPixels = (vh / 100) * viewportHeight;
+
+  return {
+    width: widthInPixels,
+    height: heightInPixels,
+  };
+};
+
+const convertRatioStringToNUmber = (ratio: string): number => {
+  const [width, height] = ratio.split(":").map(Number);
+
+  if (height !== 0) {
+    return width / height;
+  } else {
+    throw new Error("L'altezza non può essere zero");
+  }
+};
+
 const PrintPreview = () => {
   const { width, height, proportion } = useContext(DimensionContext);
 
   const navigate = useNavigate();
 
   const [image, setImage] = useState<string | null>(null);
-
   const [croppedImage, setcroppedImage] = useState<string>();
   const [showCropper, setShowCropper] = useState<boolean>(false);
+
+  const [containerSize, setContainerSize] = useState<Size>({
+    width: 0,
+    height: 0,
+  });
+  const [cropSize, setCropSize] = useState<Size>({ width: 0, height: 0 });
+  const [aspectRatio, setAspectRatio] = useState<number>(1);
+
+  useEffect(() => {
+    const updateSize = () => {
+      const responsiveSize = calculateResponsiveSize(80, 80);
+      setContainerSize(responsiveSize);
+
+      const aspectRatioFromString = convertRatioStringToNUmber(
+        proportion as string,
+      );
+      setAspectRatio(aspectRatioFromString);
+
+      const cropScaleFactor = 0.8;
+      const cropWidth = responsiveSize.width * cropScaleFactor;
+      const cropHeight = responsiveSize.height / aspectRatioFromString;
+
+      setCropSize({ width: cropWidth, height: cropHeight });
+    };
+
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const cropperRef = useRef<FixedCropperRef>(null);
 
-  const MAX_WIDTH = 900;
-  const MAX_HEIGHT = 650;
-  const scaleFactor = Math.min(
-    MAX_WIDTH / (width ? width : 1),
-    MAX_HEIGHT / (height ? height : 1),
-  );
-  const scaledWidth = (width ? width : 1) * scaleFactor;
-  const scaledHeight = (height ? height : 1) * scaleFactor;
+  // const MAX_WIDTH = 900;
+  // const MAX_HEIGHT = 650;
+
+  // function calculateScaleFactor(
+  //   canvasWidth: number,
+  //   canvasHeight: number,
+  //   maxWidth: number,
+  //   maxHeight: number,
+  // ) {
+  //   const widthRatio = maxWidth / canvasWidth;
+  //   const heightRatio = maxHeight / canvasHeight;
+  //   return Math.min(widthRatio, heightRatio, 1);
+  // }
+
+  // const scaleFactor = calculateScaleFactor(
+  //   width as number,
+  //   height as number,
+  //   MAX_WIDTH,
+  //   MAX_HEIGHT,
+  // );
+  // const containerWidth = (width as number) * scaleFactor;
+  // const containerHeight = (height as number) * scaleFactor;
+  // const aspectRatio = convertRatioStringToNUmber(proportion as string);
+
+  // const cropWidth = containerWidth * 0.8;
+  // const cropHeight = containerHeight / aspectRatio;
+
+  // const scaleFactor = Math.min(
+  //   MAX_WIDTH / (width ? width : 1),
+  //   MAX_HEIGHT / (height ? height : 1),
+  // );
+  // const scaledWidth = (width ? width : 1) * scaleFactor;
+  // const scaledHeight = (height ? height : 1) * scaleFactor;
 
   const refactorRatio: (proportion: string) => number = (
     proportion: string,
@@ -151,7 +232,13 @@ const PrintPreview = () => {
             onRotateLeft={() => rotate(-90)}
           />
           {/* Preview della foto */}
-          <div className="relative m-6 flex h-[80vh] w-[80vw] items-center justify-center rounded-xl border border-black bg-white">
+          <div
+            className="relative m-6 flex items-center justify-center rounded-xl border border-black bg-white"
+            style={{
+              width: `${containerSize.width}px`,
+              height: `${containerSize.height}px`,
+            }}
+          >
             {showCropper ? (
               <div className="relative h-full w-full">
                 <FixedCropper
@@ -164,7 +251,10 @@ const PrintPreview = () => {
                     grid: true,
                     aspectRatio: refactorRatio(proportion ?? "1:1"),
                   }}
-                  stencilSize={{ width: scaledWidth, height: scaledHeight }}
+                  stencilSize={{
+                    width: cropSize.width,
+                    height: cropSize.height,
+                  }}
                   className="h-full w-full rounded-xl"
                 />
               </div>
