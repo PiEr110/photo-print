@@ -75,18 +75,6 @@ const PrintPreview = () => {
     }
   };
 
-  //   if (cropperRef.current) {
-  //     const canvas = cropperRef.current.getCanvas();
-
-  //     if (canvas) {
-  //       const croppedDataUrl = canvas.toDataURL();
-  //       setcroppedImage(croppedDataUrl);
-  //       saveImage("printPreview_croppedImage", croppedDataUrl);
-  //       handleOrder();
-  //     }
-  //   }
-  // };
-
   const handleOrder = () => {
     navigate("/confirmation");
   };
@@ -94,11 +82,6 @@ const PrintPreview = () => {
   const handleChangePhoto = () => {
     handleChoosePhoto();
   };
-
-  // const handleresizePhoto = () => {
-  //   setShowCropper(true);
-  //   handleMenuClose();
-  // };
 
   const handleGoBack = () => {
     navigate("/");
@@ -113,6 +96,18 @@ const PrintPreview = () => {
       }
     } catch (error) {
       console.error(`Errore nel salvare ${key}:`, error);
+    }
+  };
+
+  const flip = (horizonatl: boolean, vertical: boolean) => {
+    if (cropperRef.current) {
+      cropperRef.current.flipImage(horizonatl, vertical);
+    }
+  };
+
+  const rotate = (angle: number) => {
+    if (cropperRef.current) {
+      cropperRef.current.rotateImage(angle);
     }
   };
 
@@ -145,16 +140,15 @@ const PrintPreview = () => {
   return (
     <>
       <div className="flex h-screen flex-row">
-        {/* Menu
-        <div className="w-1/4 bg-gray-200 p-4">
-          <MenuPreview />
-        </div> */}
-
         <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-200 p-4">
           <UtilityBar
             onBack={handleGoBack}
             onOrder={onCrop}
             onPhotoChange={handleChangePhoto}
+            onFLipHorizontal={() => flip(true, false)}
+            onFlipVertical={() => flip(false, true)}
+            onRotateRight={() => rotate(90)}
+            onRotateLeft={() => rotate(-90)}
           />
           {/* Preview della foto */}
           {showCropper ? (
