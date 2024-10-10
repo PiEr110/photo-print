@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { RiImageAddFill } from "react-icons/ri";
 import { FixedCropper, FixedCropperRef } from "react-advanced-cropper";
@@ -48,33 +42,6 @@ const PrintPreview = () => {
     }
   };
 
-  // const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files && event.target.files[0];
-
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = async () => {
-  //       const result = reader.result as string;
-  //       const img = new Image();
-  //       img.src = result;
-
-  //       img.onload = () => {
-  //         if (img.width <= scaledWidth && img.height <= scaledHeight) {
-  //           setImage(result);
-  //           setcroppedImage("");
-  //           saveImage("printPreview_image", result);
-  //           saveImage("printPreview_croppedImage", null);
-  //         } else {
-  //           setShowCropper(true);
-  //           setImage(result);
-  //           saveImage("printPreview_image", result);
-  //         }
-  //       };
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
 
@@ -107,7 +74,7 @@ const PrintPreview = () => {
       }
     }
   };
-  // const onCrop = () => {
+
   //   if (cropperRef.current) {
   //     const canvas = cropperRef.current.getCanvas();
 
@@ -239,46 +206,7 @@ const PrintPreview = () => {
           />
 
           {/* Pulsanti ordina e indietro */}
-          {/* <div className="flex justify-between space-x-8 p-4">
-            <button
-              className="rounded-full bg-gray-500 px-6 py-3 text-white shadow-lg hover:bg-gray-600"
-              onClick={handleGoBack}
-            >
-              Indietro
-            </button>
-            {image && (
-              <button
-                className="rounded-full bg-blue-500 px-6 py-3 text-white shadow-lg hover:bg-blue-600"
-                onClick={onCrop}
-              >
-                Ordina
-              </button>
-            )}
-          </div> */}
         </div>
-        {/* Context Menu */}
-        {/* {contextMenuVisible && contextMenuPosition && (
-          <div
-            className="fixed rounded border border-gray-300 bg-white shadow-lg"
-            style={{ left: contextMenuPosition.x, top: contextMenuPosition.y }}
-            onMouseLeave={handleMenuClose}
-          >
-            <ul className="p-2">
-              <li
-                className="cursor-pointer p-1 hover:bg-gray-200"
-                onClick={handleChangePhoto}
-              >
-                Cambia foto
-              </li>
-              <li
-                className="cursor-pointer p-1 hover:bg-gray-200"
-                onClick={handleresizePhoto}
-              >
-                Ritaglia/Ridimensiona
-              </li>
-            </ul>
-          </div>
-        )} */}
       </div>
     </>
   );
