@@ -51,28 +51,6 @@ const PrintPreview = () => {
   const [cropSize, setCropSize] = useState<Size>({ width: 0, height: 0 });
   const [aspectRatio, setAspectRatio] = useState<number>(1);
 
-  useEffect(() => {
-    const updateSize = () => {
-      const responsiveSize = calculateResponsiveSize(80, 80);
-      setContainerSize(responsiveSize);
-
-      const aspectRatioFromString = convertRatioStringToNUmber(
-        proportion as string,
-      );
-      setAspectRatio(aspectRatioFromString);
-
-      const cropScaleFactor = 0.8;
-      const cropWidth = responsiveSize.width * cropScaleFactor;
-      const cropHeight = responsiveSize.height / aspectRatioFromString;
-
-      setCropSize({ width: cropWidth, height: cropHeight });
-    };
-
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const cropperRef = useRef<FixedCropperRef>(null);
 
@@ -216,6 +194,26 @@ const PrintPreview = () => {
     localforage
       .getItem("printPreview_image")
       .then((prop) => prop && setShowCropper(true));
+
+    const updateSize = () => {
+      const responsiveSize = calculateResponsiveSize(80, 80);
+      setContainerSize(responsiveSize);
+
+      const aspectRatioFromString = convertRatioStringToNUmber(
+        proportion as string,
+      );
+      setAspectRatio(aspectRatioFromString);
+
+      const cropScaleFactor = 0.8;
+      const cropWidth = responsiveSize.width * cropScaleFactor;
+      const cropHeight = responsiveSize.height / aspectRatioFromString;
+
+      setCropSize({ width: cropWidth, height: cropHeight });
+    };
+
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
   }, []);
 
   return (
