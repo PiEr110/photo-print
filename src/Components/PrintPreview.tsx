@@ -41,6 +41,7 @@ const PrintPreview = () => {
   const navigate = useNavigate();
 
   const [image, setImage] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [croppedImage, setcroppedImage] = useState<string>();
   const [showCropper, setShowCropper] = useState<boolean>(false);
 
@@ -49,6 +50,7 @@ const PrintPreview = () => {
     height: 0,
   });
   const [cropSize, setCropSize] = useState<Size>({ width: 0, height: 0 });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [aspectRatio, setAspectRatio] = useState<number>(1);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
