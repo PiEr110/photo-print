@@ -36,7 +36,7 @@ const convertRatioStringToNUmber = (ratio: string): number => {
 };
 
 const PrintPreview = () => {
-  const { width, height, proportion } = useContext(DimensionContext);
+  const { width, height, proportion } = useContext(DimensionContext); //Selezioniamo le dimensioni scelte dal contesto
 
   const navigate = useNavigate();
 
@@ -158,9 +158,9 @@ const PrintPreview = () => {
     }
   };
 
-  const flip = (horizonatl: boolean, vertical: boolean) => {
+  const flip = (horizontal: boolean, vertical: boolean) => {
     if (cropperRef.current) {
-      cropperRef.current.flipImage(horizonatl, vertical);
+      cropperRef.current.flipImage(horizontal, vertical);
     }
   };
 
@@ -196,7 +196,7 @@ const PrintPreview = () => {
       .then((prop) => prop && setShowCropper(true));
 
     const updateSize = () => {
-      const responsiveSize = calculateResponsiveSize(80, 80);
+      const responsiveSize = calculateResponsiveSize(80, 80); //80% della vieweport
       setContainerSize(responsiveSize);
 
       const aspectRatioFromString = convertRatioStringToNUmber(
@@ -214,7 +214,7 @@ const PrintPreview = () => {
     updateSize();
     window.addEventListener("resize", updateSize);
     return () => window.removeEventListener("resize", updateSize);
-  }, []);
+  }, [proportion, width, height]);
 
   return (
     <>
