@@ -1,4 +1,3 @@
-// src/components/DimensionChooser.tsx
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
@@ -54,7 +53,7 @@ const DimensionChooser: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100 p-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-8">
       <div className="w-3/4 rounded-lg bg-white p-4 shadow-md">
         <Accordion>
           {Object.entries(proporzioneDimensioni).map(
