@@ -16,8 +16,7 @@ import "./index.css";
 
 //   // Iniettare gli stili nello Shadow Dom
 //   const style = document.createElement("style");
-//   // style.textContent =
-//   //   document.querySelector("style[data-tailwind]")?.textContent ?? "";
+
 //   style.textContent = `@import url('./src/index.css')`;
 //   shadowRoot.appendChild(style);
 
@@ -33,7 +32,7 @@ import "./index.css";
 //   console.error("Elemento con id 'root' non trovato");
 // }
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById("root-react")!).render(
   <StrictMode>
     <NextUIProvider>
       <App />
